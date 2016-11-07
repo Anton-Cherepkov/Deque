@@ -136,7 +136,7 @@ public:
     }
 
     void shink_to_fit() {
-        if (size() > 4 && capacity > size() + 1) {
+        if (size() > INITIAL_CAPACITY && capacity > size() + 1) {
             realloc(size() + 1);
         }
     }
