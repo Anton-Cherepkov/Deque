@@ -16,7 +16,7 @@ class Deque {
 
 private:
 
-    T* buffer;
+    T* buffer = nullptr;
 
     size_t head;
     size_t tail;
@@ -68,16 +68,18 @@ public:
         tail = 0;
     }
 
-    Deque(const Deque& other) : Deque() {
+    Deque(const Deque& other) {
         (*this) = other;
     }
 
     ~Deque() {
-        delete[] buffer;
+        if (buffer != nullptr)
+            delete[] buffer;
     }
 
     Deque& operator =(const Deque& other) {
-        delete[] buffer;
+        if (buffer != nullptr)
+            delete[] buffer;
         buffer = new T[other.capacity];
         std::copy(other.buffer, other.buffer + other.capacity, buffer);
         head = other.head;
