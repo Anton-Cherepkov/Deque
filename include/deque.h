@@ -85,6 +85,7 @@ public:
         head = other.head;
         tail = other.tail;
         capacity = other.capacity;
+        return *this;
     }
 
     // Element access
