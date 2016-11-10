@@ -11,6 +11,8 @@
 #include <iterator>
 #include <iostream>
 
+#include "deque_iterator.h"
+
 template <class T>
 class Deque {
 
@@ -58,6 +60,13 @@ private:
     }
 
 public:
+
+    // Typedef iterators
+
+    typedef DequeIterator<T, T*, T&> iterator;
+    typedef DequeIterator<T, const T*, const T&> const_iterator;
+    typedef std::reverse_iterator<DequeIterator<T, T*, T&>> reverse_iterator;
+    typedef std::reverse_iterator<DequeIterator<T, const T*, const T&>> const_reverse_iterator;
 
     // Constructors & destructors
 
@@ -172,6 +181,55 @@ public:
         head = (head + 1) % capacity;
     }
 
+    // Iterators
+
+    iterator begin() {
+        return iterator(buffer, capacity, head, tail, 0);
+    }
+
+    const_iterator begin() const {
+        return const_iterator(buffer, capacity, head, tail, 0);
+    }
+
+    const_iterator cbegin() const {
+        return const_iterator(buffer, capacity, head, tail, 0);
+    }
+
+    iterator end() {
+        return iterator(buffer, capacity, head, tail, size());
+    }
+
+    const_iterator end() const {
+        return const_iterator(buffer, capacity, head, tail, size());
+    }
+
+    const_iterator cend() const {
+        return const_iterator(buffer, capacity, head, tail, size());
+    }
+
+    reverse_iterator rbegin() {
+        return reverse_iterator(end());
+    }
+
+    const_reverse_iterator rbegin() const {
+        return const_reverse_iterator(cend());
+    }
+
+    const_reverse_iterator crbegin() const {
+        return const_reverse_iterator(cend());
+    }
+
+    reverse_iterator rend() {
+        return reverse_iterator(begin());
+    }
+
+    const_reverse_iterator rend() const {
+        return const_reverse_iterator(cbegin());
+    }
+
+    const_reverse_iterator crend() const {
+        return const_reverse_iterator(cbegin());
+    }
 };
 
 #endif //DEQUE_DEQUE_H
