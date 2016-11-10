@@ -13,13 +13,13 @@ class DequeIterator : public std::iterator<std::random_access_iterator_tag, T> {
 private:
 
     T* buffer;
-    size_t capacity;
-    size_t head;
-    size_t tail;
+    int capacity;
+    int head;
+    int tail;
 
-    size_t current;
+    int current;
 
-    size_t position_in_buffer(size_t ind) const {
+    int position_in_buffer(int ind) const {
         return (head + ind) % capacity;
     }
 
@@ -27,7 +27,7 @@ public:
 
     DequeIterator() {}
 
-    DequeIterator(T* buffer, size_t capacity, size_t head, size_t tail, size_t current) : buffer(buffer), capacity(capacity), head(head), tail(tail), current(current) {}
+    DequeIterator(T* buffer, int capacity, int head, int tail, int current) : buffer(buffer), capacity(capacity), head(head), tail(tail), current(current) {}
 
     DequeIterator(const DequeIterator& other) {
         (*this) = other;
