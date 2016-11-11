@@ -127,10 +127,9 @@ public:
         return static_cast<int>(current) - static_cast<int>(other.current);
     }
 
-    Pointer operator [](int shift) {
+    Reference operator [](int shift) {
         return *DequeIterator(*this + shift);
     }
-
 
 };
 
