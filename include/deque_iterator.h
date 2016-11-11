@@ -128,9 +128,13 @@ public:
     }
 
     Reference operator [](int shift) {
-        return *DequeIterator(*this + shift);
+        return *(*this + shift);
     }
 
 };
+
+DequeIterator operator +(int shift, const DequeIterator& it) {
+    return it + shift;
+}
 
 #endif //DEQUE_DEQUE_ITERATOR_H
