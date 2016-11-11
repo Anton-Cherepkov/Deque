@@ -133,7 +133,8 @@ public:
 
 };
 
-DequeIterator operator +(int shift, const DequeIterator& it) {
+template <class T, class Pointer, class Reference>
+DequeIterator<T, Pointer, Reference> operator +(int shift, const DequeIterator<T, Pointer, Reference>& it) {
     return it + shift;
 }
 
