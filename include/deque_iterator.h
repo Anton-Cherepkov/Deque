@@ -124,7 +124,7 @@ public:
 
 
     int operator -(const DequeIterator& other) const {
-        return static_cast<int>(current) - static_cast<int>(other.current);
+        return current - other.current;
     }
 
     Reference operator [](int shift) {
