@@ -176,7 +176,7 @@ TEST_F(TestDequeFixture, test_rbegin_rend_pluseq) {
     }
 }
 
-TEST_F(TestDequeFixture, test_iterator_brackets) {
+TEST_F(TestDequeFixture, test_iterator_plus) {
     FillWithRandomElements();
     std::deque<int>::iterator std_it = std_dq.begin();
     Deque<int>::iterator it = dq.begin();
@@ -186,12 +186,30 @@ TEST_F(TestDequeFixture, test_iterator_brackets) {
     }
 }
 
-TEST_F(TestDequeFixture, test_riterator_brackets) {
+TEST_F(TestDequeFixture, test_riterator_plus) {
     FillWithRandomElements();
     std::deque<int>::reverse_iterator std_it = std_dq.rbegin();
     Deque<int>::reverse_iterator it = dq.rbegin();
     for (int d = 0; d < CONTAINER_SIZE; ++d) {
         ASSERT_EQ(*(std_it + d), *(it + d));
         ASSERT_EQ(*(d + std_it), *(d + it));
+    }
+}
+
+TEST_F(TestDequeFixture, test_iterator_brackets) {
+    FillWithRandomElements();
+    std::deque<int>::iterator std_it = std_dq.begin();
+    Deque<int>::iterator it = dq.begin();
+    for (int d = 0; d < CONTAINER_SIZE; ++d) {
+        ASSERT_EQ(std_it[d], it[d]);
+    }
+}
+
+TEST_F(TestDequeFixture, test_riterator_brackets) {
+    FillWithRandomElements();
+    std::deque<int>::reverse_iterator std_it = std_dq.rbegin();
+    Deque<int>::reverse_iterator it = dq.rbegin();
+    for (int d = 0; d < CONTAINER_SIZE; ++d) {
+        ASSERT_EQ(std_it[d], it[d]);
     }
 }
