@@ -29,7 +29,7 @@ private:
     const size_t CHANGE_CAPACITY_RATIO = 2;
     const size_t INITIAL_CAPACITY = 4;
 
-    void realloc(const size_t& new_capacity) {
+    inline void realloc(const size_t& new_capacity) {
         T* temp_buffer = new T[new_capacity];
 
         size_t old_size = size();
@@ -37,7 +37,7 @@ private:
 
         for (size_t i = 0; i < old_size; ++i) {
             temp_buffer[i] = _buffer[_head];
-            _head = (_head + 1) % _capacity;
+            move_border_forward(_head);
         }
 
         delete[] _buffer;
@@ -48,16 +48,29 @@ private:
         _capacity = new_capacity;
     }
 
-    void try_to_decrease_capacity() {
+    inline void try_to_decrease_capacity() {
         if (!(size() < _capacity / DECREASE_CAPACITY_THRESHOLD) || _capacity < (INITIAL_CAPACITY << 1))
             return;
         realloc(_capacity >> CHANGE_CAPACITY_RATIO);
     }
 
-    void try_to_increase_capacity() {
+    inline void try_to_increase_capacity() {
         if (!(_head == (_tail + 1) % _capacity))
             return;
         realloc(_capacity << CHANGE_CAPACITY_RATIO);
+    }
+
+    inline void move_border_forward(size_t& val) const {
+        ++val;
+        if (val == _capacity)
+            val = 0;
+    }
+
+    inline void move_border_back(size_t& val) const {
+        if (val == 0)
+            val = _capacity - 1;
+        else
+            --val;
     }
 
 public:
@@ -154,7 +167,7 @@ public:
         return _size;
     }
 
-    void shink_to_fit() {
+    void shrink_to_fit() {
         if (size() > INITIAL_CAPACITY && _capacity > size() + 1) {
             realloc(size() + 1);
         }
@@ -170,18 +183,18 @@ public:
         try_to_increase_capacity();
         _buffer[_tail] = elem;
         ++_size;
-        _tail = (_tail + 1) % _capacity;
+        move_border_forward(_tail);
     }
 
     void pop_back() {
         try_to_decrease_capacity();
         --_size;
-        _tail = (_capacity + _tail - 1) % _capacity;
+        move_border_back(_tail);
     }
 
     void push_front(const T& elem) {
         try_to_increase_capacity();
-        _head = (_capacity + _head - 1) % _capacity;
+        move_border_back(_head);
         ++_size;
         _buffer[_head] = elem;
     }
@@ -189,7 +202,7 @@ public:
     void pop_front() {
         try_to_decrease_capacity();
         --_size;
-        _head = (_head + 1) % _capacity;
+        move_border_forward(_head);
     }
 
     // Iterators
