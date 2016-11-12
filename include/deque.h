@@ -18,11 +18,12 @@ class Deque {
 
 private:
 
-    T* buffer = nullptr;
+    T* _buffer = nullptr;
 
-    size_t head;
-    size_t tail;
-    size_t capacity;
+    size_t _head;
+    size_t _tail;
+    size_t _capacity;
+    size_t _size;
 
     const size_t DECREASE_CAPACITY_THRESHOLD = 4;
     const size_t CHANGE_CAPACITY_RATIO = 2;
@@ -32,31 +33,31 @@ private:
         T* temp_buffer = new T[new_capacity];
 
         size_t old_size = size();
-        tail = size();
+        _tail = size();
 
         for (size_t i = 0; i < old_size; ++i) {
-            temp_buffer[i] = buffer[head];
-            head = (head + 1) % capacity;
+            temp_buffer[i] = _buffer[_head];
+            _head = (_head + 1) % _capacity;
         }
 
-        delete[] buffer;
-        buffer = temp_buffer;
+        delete[] _buffer;
+        _buffer = temp_buffer;
 
-        head = 0;
+        _head = 0;
 
-        capacity = new_capacity;
+        _capacity = new_capacity;
     }
 
     void try_to_decrease_capacity() {
-        if (!(size() < capacity / DECREASE_CAPACITY_THRESHOLD) || capacity < (INITIAL_CAPACITY << 1))
+        if (!(size() < _capacity / DECREASE_CAPACITY_THRESHOLD) || _capacity < (INITIAL_CAPACITY << 1))
             return;
-        realloc(capacity >> CHANGE_CAPACITY_RATIO);
+        realloc(_capacity >> CHANGE_CAPACITY_RATIO);
     }
 
     void try_to_increase_capacity() {
-        if (!(head == (tail + 1) % capacity))
+        if (!(_head == (_tail + 1) % _capacity))
             return;
-        realloc(capacity << CHANGE_CAPACITY_RATIO);
+        realloc(_capacity << CHANGE_CAPACITY_RATIO);
     }
 
 public:
@@ -71,10 +72,11 @@ public:
     // Constructors & destructors
 
     Deque() {
-        capacity = INITIAL_CAPACITY;
-        buffer = new T[capacity];
-        head = 0;
-        tail = 0;
+        _capacity = INITIAL_CAPACITY;
+        _buffer = new T[_capacity];
+        _head = 0;
+        _tail = 0;
+        _size = 0;
     }
 
     Deque(const Deque& other) {
@@ -82,18 +84,23 @@ public:
     }
 
     ~Deque() {
-        if (buffer != nullptr)
-            delete[] buffer;
+        if (_buffer != nullptr)
+            delete[] _buffer;
     }
 
     Deque& operator =(const Deque& other) {
-        if (buffer != nullptr)
-            delete[] buffer;
-        buffer = new T[other.capacity];
-        std::copy(other.buffer, other.buffer + other.capacity, buffer);
-        head = other.head;
-        tail = other.tail;
-        capacity = other.capacity;
+        if (_buffer != nullptr)
+            delete[] _buffer;
+        if (other._buffer == nullptr) {
+            *this = Deque();
+            return *this;
+        }
+        _buffer = new T[other._capacity];
+        std::copy(other._buffer, other._buffer + other._capacity, _buffer);
+        _head = other._head;
+        _tail = other._tail;
+        _capacity = other._capacity;
+        _size = 0;
         return *this;
     }
 
@@ -114,11 +121,11 @@ public:
     }
 
     T& operator [](size_t pos) {
-        return buffer[(head + pos) % capacity];
+        return _buffer[(_head + pos) % _capacity];
     }
 
     const T& operator [](size_t pos) const {
-        return buffer[(head + pos) % capacity];
+        return _buffer[(_head + pos) % _capacity];
     }
 
     T& front() {
@@ -144,11 +151,11 @@ public:
     }
 
     size_t size() const {
-        return head > tail ? capacity + tail - head : tail - head;
+        return _size;
     }
 
     void shink_to_fit() {
-        if (size() > INITIAL_CAPACITY && capacity > size() + 1) {
+        if (size() > INITIAL_CAPACITY && _capacity > size() + 1) {
             realloc(size() + 1);
         }
     }
@@ -161,50 +168,54 @@ public:
 
     void push_back(const T& elem) {
         try_to_increase_capacity();
-        buffer[tail] = elem;
-        tail = (tail + 1) % capacity;
+        _buffer[_tail] = elem;
+        ++_size;
+        _tail = (_tail + 1) % _capacity;
     }
 
     void pop_back() {
         try_to_decrease_capacity();
-        tail = (capacity + tail - 1) % capacity;
+        --_size;
+        _tail = (_capacity + _tail - 1) % _capacity;
     }
 
     void push_front(const T& elem) {
         try_to_increase_capacity();
-        head = (capacity + head - 1) % capacity;
-        buffer[head] = elem;
+        _head = (_capacity + _head - 1) % _capacity;
+        ++_size;
+        _buffer[_head] = elem;
     }
 
     void pop_front() {
         try_to_decrease_capacity();
-        head = (head + 1) % capacity;
+        --_size;
+        _head = (_head + 1) % _capacity;
     }
 
     // Iterators
 
     iterator begin() {
-        return iterator(buffer, capacity, head, tail, 0);
+        return iterator(_buffer, _capacity, _head, _tail, 0);
     }
 
     const_iterator begin() const {
-        return const_iterator(buffer, capacity, head, tail, 0);
+        return const_iterator(_buffer, _capacity, _head, _tail, 0);
     }
 
     const_iterator cbegin() const {
-        return const_iterator(buffer, capacity, head, tail, 0);
+        return const_iterator(_buffer, _capacity, _head, _tail, 0);
     }
 
     iterator end() {
-        return iterator(buffer, capacity, head, tail, size());
+        return iterator(_buffer, _capacity, _head, _tail, size());
     }
 
     const_iterator end() const {
-        return const_iterator(buffer, capacity, head, tail, size());
+        return const_iterator(_buffer, _capacity, _head, _tail, size());
     }
 
     const_iterator cend() const {
-        return const_iterator(buffer, capacity, head, tail, size());
+        return const_iterator(_buffer, _capacity, _head, _tail, size());
     }
 
     reverse_iterator rbegin() {
