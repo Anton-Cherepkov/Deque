@@ -5,6 +5,7 @@
 #ifndef DEQUE_DEQUE_H
 #define DEQUE_DEQUE_H
 
+#include <stdexcept>
 #include <cstdio>
 #include <string>
 #include <algorithm>
@@ -78,9 +79,9 @@ public:
     // Typedef iterators
 
     typedef DequeIterator<T, T*, T&> iterator;
-    typedef DequeIterator<T, const T*, const T&> const_iterator;
+    typedef DequeIterator<const T, const T*, const T&> const_iterator;
     typedef std::reverse_iterator<DequeIterator<T, T*, T&>> reverse_iterator;
-    typedef std::reverse_iterator<DequeIterator<T, const T*, const T&>> const_reverse_iterator;
+    typedef std::reverse_iterator<DequeIterator<const T, const T*, const T&>> const_reverse_iterator;
 
     // Constructors & destructors
 
@@ -113,7 +114,7 @@ public:
         _head = other._head;
         _tail = other._tail;
         _capacity = other._capacity;
-        _size = 0;
+        _size = other._size;
         return *this;
     }
 
