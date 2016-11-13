@@ -3,6 +3,15 @@
 #include <gtest/gtest.h>
 #include <time.h>
 #include <deque>
+#include <chrono>
+
+enum ActionType {
+    PUSH_BACK,
+    POP_BACK,
+    PUSH_FRONT,
+    POP_FRONT
+};
+const ActionType ACTIONTYPES[] = {PUSH_BACK, POP_BACK, PUSH_FRONT, POP_FRONT};
 
 class TestDequeFixture : public ::testing::Test {
 protected:
@@ -107,25 +116,83 @@ TEST_F(TestDequeFixture, test_capacity) {
     ASSERT_EQ(std_dq.empty(), dq.empty());
 }
 
-TEST_F(TestDequeFixture, test_shink_to_fit) {
+TEST_F(TestDequeFixture, test_shrink_to_fit) {
     ASSERT_EQ(std_dq.size(), dq.size());
     ASSERT_EQ(std_dq.empty(), dq.empty());
     for (int i = 0; i < CONTAINER_SIZE; ++i) {
         rand() % 2 ? PushBackRandomElement() : PushFrontRandomElement();
-        dq.shink_to_fit();
+        dq.shrink_to_fit();
         ASSERT_TRUE(AreEqual());
         ASSERT_EQ(std_dq.size(), dq.size());
         ASSERT_EQ(std_dq.empty(), dq.empty());
     }
     for (int i = 0; i < CONTAINER_SIZE; ++i) {
         rand() % 2 ? PopBackElement() : PopFrontElement();
-        dq.shink_to_fit();
+        dq.shrink_to_fit();
         ASSERT_TRUE(AreEqual());
         ASSERT_EQ(std_dq.size(), dq.size());
         ASSERT_EQ(std_dq.empty(), dq.empty());
     }
     ASSERT_EQ(std_dq.size(), dq.size());
     ASSERT_EQ(std_dq.empty(), dq.empty());
+}
+
+void generate_actions(std::vector<ActionType>& actions, int N) {
+    actions.clear();
+    int size = 0;
+    for (int i = 0; i < N; ++i) {
+        actions.push_back(ACTIONTYPES[rand() % 4]);
+        if (actions.back() == POP_BACK || actions.back() == POP_FRONT)
+            --size;
+        else
+            ++size;
+        if (size == -1) {
+            size = 0;
+            actions.pop_back();
+            --i;
+        }
+    }
+}
+
+template <class DequeType>
+void run_actions(DequeType& dq, std::vector<ActionType>& actions) {
+    for (size_t i = 0; i < actions.size(); ++i) {
+        if (actions[i] == POP_FRONT)
+            dq.pop_front();
+        else if (actions[i] == POP_BACK)
+            dq.pop_back();
+        else if (actions[i] == PUSH_FRONT)
+            dq.push_front(rand());
+        else if (actions[i] == PUSH_BACK)
+            dq.push_back(rand());
+    }
+}
+
+TEST_F(TestDequeFixture, test_amortized_complexity) {
+    const int COEFFICIENTS[] = {2, 3, 5, 10};
+    const int MIN_SIZE = 10000;
+    const int MAX_SIZE = 100000000;
+    std::chrono::time_point<std::chrono::system_clock> time1, time2;
+    double time_current, time_previous;
+    std::vector<ActionType> actions;
+    for (int c = 0; c < 4; ++c) {
+        std::cout << "Coefficient: " << COEFFICIENTS[c] << '\n';
+        for (int size = MIN_SIZE; size <= MAX_SIZE; size *= COEFFICIENTS[c]) {
+            dq.clear();
+            generate_actions(actions, size);
+
+            time1 = std::chrono::system_clock::now();
+            run_actions(dq, actions);
+            time2 = std::chrono::system_clock::now();
+
+            time_current = std::chrono::duration_cast<std::chrono::microseconds>(time2 - time1).count();
+            if (size != MIN_SIZE) {
+                std::cout << time_current / time_previous << '\n';
+                EXPECT_LE(time_current / time_previous, COEFFICIENTS[c] * 1.5);
+            }
+            time_previous = time_current;
+        }
+    }
 }
 
 // Iterator tests
