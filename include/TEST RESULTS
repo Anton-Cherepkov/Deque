@@ -1,0 +1,72 @@
+[==========] Running 15 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 15 tests from TestDequeFixture
+[ RUN      ] TestDequeFixture.test_brackets
+[       OK ] TestDequeFixture.test_brackets (2 ms)
+[ RUN      ] TestDequeFixture.test_push_back_push_front
+[       OK ] TestDequeFixture.test_push_back_push_front (8149 ms)
+[ RUN      ] TestDequeFixture.test_pop_back_pop_front
+[       OK ] TestDequeFixture.test_pop_back_pop_front (6913 ms)
+[ RUN      ] TestDequeFixture.test_back_front
+[       OK ] TestDequeFixture.test_back_front (3 ms)
+[ RUN      ] TestDequeFixture.test_capacity
+[       OK ] TestDequeFixture.test_capacity (3 ms)
+[ RUN      ] TestDequeFixture.test_shrink_to_fit
+[       OK ] TestDequeFixture.test_shrink_to_fit (11846 ms)
+[ RUN      ] TestDequeFixture.test_amortized_complexity
+Coefficient: 2
+2.12525
+1.81274
+2.02569
+1.97178
+1.91243
+1.98428
+2.23691
+1.90957
+1.92683
+2.0602
+1.8921
+2.03677
+2.18345
+Coefficient: 3
+2.7173
+3.25
+3.02508
+2.84917
+3.15763
+2.91705
+3.08862
+2.97193
+Coefficient: 5
+5.1219
+4.58774
+5.16653
+5.26876
+4.61707
+Coefficient: 10
+9.7362
+9.80739
+10.6214
+9.19256
+[       OK ] TestDequeFixture.test_amortized_complexity (48341 ms)
+[ RUN      ] TestDequeFixture.test_begin_end
+[       OK ] TestDequeFixture.test_begin_end (2 ms)
+[ RUN      ] TestDequeFixture.test_begin_end_pluseq
+[       OK ] TestDequeFixture.test_begin_end_pluseq (3 ms)
+[ RUN      ] TestDequeFixture.test_rbegin_rend
+[       OK ] TestDequeFixture.test_rbegin_rend (2 ms)
+[ RUN      ] TestDequeFixture.test_rbegin_rend_pluseq
+[       OK ] TestDequeFixture.test_rbegin_rend_pluseq (7 ms)
+[ RUN      ] TestDequeFixture.test_iterator_plus
+[       OK ] TestDequeFixture.test_iterator_plus (4 ms)
+[ RUN      ] TestDequeFixture.test_riterator_plus
+[       OK ] TestDequeFixture.test_riterator_plus (4 ms)
+[ RUN      ] TestDequeFixture.test_iterator_brackets
+[       OK ] TestDequeFixture.test_iterator_brackets (2 ms)
+[ RUN      ] TestDequeFixture.test_riterator_brackets
+[       OK ] TestDequeFixture.test_riterator_brackets (3 ms)
+[----------] 15 tests from TestDequeFixture (75285 ms total)
+
+[----------] Global test environment tear-down
+[==========] 15 tests from 1 test case ran. (75285 ms total)
+[  PASSED  ] 15 tests.
